@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<button onclick="alert('Test alert')">
+    Show Alert
+</button>
+
+<iframe
+    id="test-frame"
+    srcdoc="
+        <html>
+            <body>
+                <input id='frame-input'>
+            </body>
+        </html>
+    "
+></iframe>
+
+<a href="https://example.com" target="_blank">
+    Open New Tab
+</a>
+
+<div
+    id="hover-box"
+    style="width: 200px;
+           height: 100px;
+           background: lightgray;"
+    onmouseover="this.innerText='Hovered!'"
+>
+    Hover Me
+</div>
+
+<select id="test-select">
+    <option value="chrome">Chrome</option>
+    <option value="firefox">Firefox</option>
+    <option value="edge">Edge</option>
+</select>
+
+</body>
+</html>
