@@ -28,3 +28,10 @@ class CheckoutPage(BasePage):
         self.enter_last_name(last_name)
         self.enter_postal_code(postal_code)
         self.click_continue()
+
+    def wait_until_title_is(self, expected_title):
+        self.wait_for_text(
+            *CheckoutPageLocators.PAGE_TITLE,
+            expected_title
+        )
+

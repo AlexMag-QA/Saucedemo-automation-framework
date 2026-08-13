@@ -36,6 +36,10 @@ def test_successful_checkout(
 
     cart_page.checkout()
 
+    checkout_page.wait_until_title_is(
+        EXPECTED_CHECKOUT_INFORMATION_TITLE
+    )
+    
     assert (
             checkout_page.get_page_title()
             == EXPECTED_CHECKOUT_INFORMATION_TITLE
