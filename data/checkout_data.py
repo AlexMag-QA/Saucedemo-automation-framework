@@ -1,0 +1,11 @@
+FIRST_NAME = "Alex"
+LAST_NAME = "Mag"
+POSTAL_CODE = "12345"
+
+EXPECTED_CHECKOUT_INFORMATION_TITLE = "Checkout: Your Information"
+EXPECTED_CHECKOUT_OVERVIEW_TITLE = "Checkout: Overview"
+EXPECTED_CHECKOUT_COMPLETE_TITLE = "Checkout: Complete!"
+EXPECTED_CHECKOUT_COMPLETE_TEXT = "Thank you for your order!"
+
+EXPECTED_PRODUCT_NAME = "Sauce Labs Backpack"
+

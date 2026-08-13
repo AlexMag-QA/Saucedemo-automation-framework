@@ -15,7 +15,10 @@ class CheckoutPage(BasePage):
     def click_continue(self):
         self.click(*CheckoutPageLocators.CONTINUE_BUTTON)
 
-    def fill_checkout_information(
+    def get_page_title(self):
+        return self.get_text(*CheckoutPageLocators.PAGE_TITLE)
+
+    def submit_checkout_information(
             self,
             first_name,
             last_name,
