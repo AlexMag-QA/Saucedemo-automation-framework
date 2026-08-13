@@ -4,11 +4,9 @@ UI test automation framework built with Python, Selenium WebDriver and pytest us
 
 ## Test Application
 
-The framework uses SauceDemo as the application under test.
+SauceDemo is used to demonstrate and practice automated UI testing scenarios such as authentication, product management, shopping cart functionality and the complete checkout flow.
 
 Application: https://www.saucedemo.com/
-
-SauceDemo is used to demonstrate and practice automated UI testing scenarios such as authentication, product management and shopping cart functionality.
 
 ## Tech Stack
 
@@ -37,6 +35,8 @@ SauceDemo is used to demonstrate and practice automated UI testing scenarios suc
 - Multiple windows and tabs
 - ActionChains
 - Select dropdowns
+- Shopping cart interactions
+- End-to-end checkout flow
 
 ## Project Structure
 
@@ -55,6 +55,17 @@ QA_Automation_Framework/
 ├── requirements.txt
 └── README.md 
 ```
+## Test Coverage
+
+The current test suite covers:
+
+- Successful and invalid login scenarios
+- Product addition and removal from the shopping cart
+- Shopping cart state validation
+- End-to-end checkout flow
+- Checkout page transitions and successful order completion
+- Browser interactions including alerts, iFrames, multiple tabs, hover actions and dropdowns
+
 ## Installation
 
 Clone the repository:

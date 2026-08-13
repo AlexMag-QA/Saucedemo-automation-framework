@@ -25,3 +25,6 @@ class InventoryPage(BasePage):
         return self.is_element_visible(
             *InventoryPageLocators.CART_BADGE
         )
+
+    def open_cart(self):
+        self.click(*InventoryPageLocators.CART_LINK)

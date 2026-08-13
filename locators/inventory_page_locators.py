@@ -13,6 +13,10 @@ class InventoryPageLocators:
         "[data-test='shopping-cart-badge']"
     )
 
+    CART_LINK = (
+        By.CSS_SELECTOR,
+        "[data-test='shopping-cart-link']"
+    )
 
     @staticmethod
     def add_to_cart_button(product):

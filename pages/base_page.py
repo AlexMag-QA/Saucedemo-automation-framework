@@ -1,12 +1,10 @@
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from config.settings import DEFAULT_TIMEOUT, ELEMENT_CHECK_TIMEOUT
 from utils.logger import get_logger
-
-from selenium.webdriver.support.ui import Select
 
 
 class BasePage:
@@ -47,6 +45,17 @@ class BasePage:
 
     def get_text(self, by, value):
         return self.find(by, value).text
+
+    def wait_for_text(self, by, value, text):
+        WebDriverWait(
+            self.driver,
+            DEFAULT_TIMEOUT
+        ).until(
+            EC.text_to_be_present_in_element(
+                (by, value),
+                text
+            )
+        )
 
     def is_element_visible(self, by, value, timeout=ELEMENT_CHECK_TIMEOUT):
         try:
