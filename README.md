@@ -1,27 +1,43 @@
 # QA Automation Framework
 
-UI test automation framework built with Python, Selenium WebDriver and pytest using the Page Object Model.
+Automation testing framework built with Python, Selenium WebDriver, pytest, Requests and Pydantic.
 
-## Test Application
+The project demonstrates UI and REST API test automation using a layered framework architecture, Page Object Model, API Client pattern, pytest fixtures and schema validation.
 
-SauceDemo is used to demonstrate and practice automated UI testing scenarios such as authentication, product management, shopping cart functionality and the complete checkout flow.
+## Test Applications
+
+### UI Testing
+
+SauceDemo is used for automated UI testing scenarios including authentication, product management, shopping cart functionality and the complete checkout flow.
 
 Application: https://www.saucedemo.com/
+
+### API Testing
+
+JSONPlaceholder is used for REST API testing, including CRUD operations, query parameters, negative scenarios and response schema validation.
+
+API: https://jsonplaceholder.typicode.com/
+
+DummyJSON is used for authentication scenarios including login, Bearer token authentication and protected endpoints.
+
+API: https://dummyjson.com/
 
 ## Tech Stack
 
 - Python
 - Selenium WebDriver
 - pytest
-
-## Design Pattern
-
+- Requests
+- Pydantic
+- REST API
 - Page Object Model
+- API Client pattern
 
 ## Features
 
-- Page Object architecture
-- Cross-browser testing
+### UI Automation
+
+- Page Object Model architecture
 - Chrome and Firefox support
 - Headless mode
 - Environment selection
@@ -31,40 +47,134 @@ Application: https://www.saucedemo.com/
 - Explicit waits
 - Logging to console and files
 - Automatic screenshots on test failure
-- Alerts and iFrames support
+- Alerts and iFrames
 - Multiple windows and tabs
 - ActionChains
 - Select dropdowns
 - Shopping cart interactions
 - End-to-end checkout flow
 
+### API Automation
+
+- GET, POST, PUT, PATCH and DELETE requests
+- API Client architecture
+- `requests.Session`
+- Centralized API configuration
+- Request headers and query parameters
+- JSON request and response validation
+- Bearer token authentication
+- Positive and negative API scenarios
+- pytest parametrization
+- Pydantic schema validation
+- Strict response type validation
+- CRUD testing
+
 ## Project Structure
 
 ```text
 QA_Automation_Framework/
+├── api/
+│   └── posts_client.py
 ├── config/
+│   └── api_settings.py
 ├── data/
 ├── locators/
-├── logs/
+├── models/
+│   └── post_model.py
 ├── pages/
-├── screenshots/
 ├── tests/
+│   ├── api/
+│   │   ├── conftest.py
+│   │   ├── test_auth.py
+│   │   ├── test_negative_posts.py
+│   │   ├── test_posts.py
+│   │   └── test_query_params.py
+│   └── UI tests
 ├── utils/
+├── logs/
+├── screenshots/
 ├── .gitignore
 ├── pytest.ini
 ├── requirements.txt
-└── README.md 
+└── README.md
 ```
+
+## Architecture
+
+The framework separates test logic from technical implementation.
+
+### UI Layer
+
+```text
+Tests
+  ↓
+Page Objects
+  ↓
+BasePage
+  ↓
+Selenium WebDriver
+```
+
+Common Selenium actions are implemented in `BasePage`.
+
+Browser creation is isolated in `browser_factory.py`.
+
+pytest fixtures manage browser setup and test dependencies.
+
+### API Layer
+
+```text
+Config
+  ↓
+API Client
+  ↓
+requests.Session
+  ↓
+REST API
+  ↓
+Pydantic Models
+  ↓
+Tests / Assertions
+```
+
+API endpoints are stored in configuration.
+
+`PostsClient` contains HTTP request logic and uses `requests.Session`.
+
+Pydantic models validate API response structure and data types.
+
+Tests contain test scenarios and assertions without duplicating HTTP implementation.
+
 ## Test Coverage
 
-The current test suite covers:
+### UI
 
-- Successful and invalid login scenarios
+The UI test suite covers:
+
+- Successful and invalid login
 - Product addition and removal from the shopping cart
 - Shopping cart state validation
-- End-to-end checkout flow
-- Checkout page transitions and successful order completion
-- Browser interactions including alerts, iFrames, multiple tabs, hover actions and dropdowns
+- End-to-end checkout
+- Browser alerts
+- iFrames
+- Multiple tabs
+- Hover actions
+- Dropdowns
+
+### API
+
+The API test suite covers:
+
+- Authentication
+- Bearer token usage
+- Missing and invalid tokens
+- CRUD operations
+- Query parameter filtering
+- Positive and negative scenarios
+- Parametrized API tests
+- Response headers
+- Pydantic schema validation
+- Strict data type validation
 
 ## Installation
 
@@ -94,10 +204,16 @@ pip install -r requirements.txt
 
 ## Running Tests
 
-Run all tests:
+Run the complete test suite:
 
 ```bash
-pytest
+pytest -v
+```
+
+Run only API tests:
+
+```bash
+pytest tests/api -v
 ```
 
 Run smoke tests:
@@ -118,13 +234,13 @@ Run tests in headless mode:
 pytest --headless
 ```
 
-Run tests in Firefox:
+Run UI tests in Firefox:
 
 ```bash
 pytest --browser=firefox
 ```
 
-Run tests on the production environment:
+Run tests for the production environment:
 
 ```bash
 pytest --env=prod
@@ -152,31 +268,28 @@ pytest -m smoke --browser=chrome --env=prod --headless
 
 ## Test Artifacts
 
-Logs are stored in:
+Logs are generated in:
 
 ```text
 logs/
 ```
 
-Screenshots for failed UI tests are stored in:
+Screenshots for failed UI tests are generated in:
 
 ```text
 screenshots/
 ```
 
-Both directories are generated automatically.
+Generated artifacts are excluded from Git.
 
+## Current Status
 
-## Architecture
+The framework currently contains automated UI and REST API tests.
 
-The framework uses the Page Object Model.
+Latest full regression run:
 
-Common Selenium actions are implemented in `BasePage`.
+```text
+39 passed
+```
 
-Test setup and dependencies are managed through pytest fixtures.
-
-Browser creation is isolated in `browser_factory.py`.
-
-Configuration is separated from test data.
-
-Logging and screenshot utilities are stored in `utils/`.
+The project is continuously extended as new automation testing technologies and framework components are added.
