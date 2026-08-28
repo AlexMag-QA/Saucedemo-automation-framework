@@ -1,8 +1,8 @@
 # QA Automation Framework
 
-Automation testing framework built with Python, Selenium WebDriver, pytest, Requests and Pydantic.
+Automation testing framework built with Python, Selenium WebDriver, pytest, Requests, Pydantic, PostgreSQL and Psycopg.
 
-The project demonstrates UI and REST API test automation using a layered framework architecture, Page Object Model, API Client pattern, pytest fixtures and schema validation.
+The project demonstrates UI, REST API and Database test automation using a layered framework architecture, Page Object Model, API Client pattern, Repository pattern, pytest fixtures, schema validation and isolated database transactions.
 
 ## Test Applications
 
@@ -22,6 +22,14 @@ DummyJSON is used for authentication scenarios including login, Bearer token aut
 
 API: https://dummyjson.com/
 
+### Database Testing
+
+PostgreSQL is used for database testing scenarios.
+
+Database tests cover data validation, positive and negative scenarios, parametrized queries, data modification and transaction rollback.
+
+Test data modifications are automatically rolled back after tests to keep database tests isolated.
+
 ## Tech Stack
 
 - Python
@@ -29,9 +37,13 @@ API: https://dummyjson.com/
 - pytest
 - Requests
 - Pydantic
+- PostgreSQL
+- Psycopg
+- python-dotenv
 - REST API
 - Page Object Model
 - API Client pattern
+- Repository pattern
 
 ## Features
 
@@ -69,30 +81,71 @@ API: https://dummyjson.com/
 - Strict response type validation
 - CRUD testing
 
+### Database Automation
+
+- PostgreSQL database testing
+- Psycopg database connection
+- Parameterized SQL queries
+- Positive and negative database scenarios
+- pytest fixtures
+- pytest parametrization
+- Dictionary-based query results
+- INSERT and UPDATE testing
+- Automatic transaction rollback
+- Test data isolation
+- Repository pattern
+- Centralized database operations
+- Environment-based database configuration
+- Secrets excluded from Git
+
 ## Project Structure
 
 ```text
 QA_Automation_Framework/
 ├── api/
+│   ├── __init__.py
 │   └── posts_client.py
+│
 ├── config/
 │   └── api_settings.py
+│
+├── database/
+│   ├── __init__.py
+│   └── users_repository.py
+│
 ├── data/
+│
 ├── locators/
+│
 ├── models/
+│   ├── __init__.py
 │   └── post_model.py
+│
 ├── pages/
+│
 ├── tests/
 │   ├── api/
+│   │   ├── __init__.py
 │   │   ├── conftest.py
 │   │   ├── test_auth.py
 │   │   ├── test_negative_posts.py
 │   │   ├── test_posts.py
 │   │   └── test_query_params.py
+│   │
+│   ├── db/
+│   │   ├── __init__.py
+│   │   ├── conftest.py
+│   │   └── test_users_db.py
+│   │
 │   └── UI tests
+│
 ├── utils/
+│
 ├── logs/
+│
 ├── screenshots/
+│
+├── .env.example
 ├── .gitignore
 ├── pytest.ini
 ├── requirements.txt
@@ -101,7 +154,7 @@ QA_Automation_Framework/
 
 ## Architecture
 
-The framework separates test logic from technical implementation.
+The framework separates test scenarios from technical implementation.
 
 ### UI Layer
 
@@ -113,18 +166,22 @@ Page Objects
 BasePage
   ↓
 Selenium WebDriver
+  ↓
+Web Application
 ```
 
 Common Selenium actions are implemented in `BasePage`.
 
 Browser creation is isolated in `browser_factory.py`.
 
-pytest fixtures manage browser setup and test dependencies.
+pytest fixtures manage browser setup, teardown and test dependencies.
+
+Page Objects contain page-specific actions and hide Selenium implementation from tests.
 
 ### API Layer
 
 ```text
-Config
+Tests
   ↓
 API Client
   ↓
@@ -134,7 +191,7 @@ REST API
   ↓
 Pydantic Models
   ↓
-Tests / Assertions
+Assertions
 ```
 
 API endpoints are stored in configuration.
@@ -144,6 +201,50 @@ API endpoints are stored in configuration.
 Pydantic models validate API response structure and data types.
 
 Tests contain test scenarios and assertions without duplicating HTTP implementation.
+
+### Database Layer
+
+```text
+Tests
+  ↓
+UsersRepository
+  ↓
+Psycopg Cursor
+  ↓
+PostgreSQL
+```
+
+Database tests do not contain duplicated SQL implementation.
+
+`UsersRepository` contains SQL operations related to users and provides reusable methods such as:
+
+```python
+get_user_by_id()
+create_user()
+update_user_age()
+```
+
+pytest fixtures manage database connections and cursors.
+
+Database-changing tests are isolated using transaction rollback:
+
+```text
+SETUP
+  ↓
+Database Connection
+  ↓
+Cursor
+  ↓
+Test
+  ↓
+ROLLBACK
+  ↓
+Connection Cleanup
+```
+
+This allows tests to create or modify database records without permanently changing test data.
+
+Database credentials are loaded from environment variables and are not stored in source code.
 
 ## Test Coverage
 
@@ -176,12 +277,34 @@ The API test suite covers:
 - Pydantic schema validation
 - Strict data type validation
 
+### Database
+
+The database test suite covers:
+
+- Existing user validation
+- Nonexistent user validation
+- Parametrized database tests
+- SELECT queries
+- INSERT operations
+- UPDATE operations
+- Database result validation
+- Positive and negative database scenarios
+- Transaction rollback
+- Test data isolation
+- Repository-based database access
+
 ## Installation
 
 Clone the repository:
 
 ```bash
 git clone <repository-url>
+```
+
+Move to the project directory:
+
+```bash
+cd QA_Automation_Framework
 ```
 
 Create a virtual environment:
@@ -202,6 +325,26 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
+## Database Configuration
+
+Database credentials are stored in environment variables.
+
+Create a local `.env` file in the project root using `.env.example` as a template:
+
+```text
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=qa_training
+DB_USER=postgres
+DB_PASSWORD=your_password
+```
+
+The real `.env` file is excluded from Git.
+
+Do not store real database passwords in `.env.example` or source code.
+
+PostgreSQL must be available before running database tests.
+
 ## Running Tests
 
 Run the complete test suite:
@@ -210,10 +353,22 @@ Run the complete test suite:
 pytest -v
 ```
 
+Run only UI tests:
+
+```bash
+pytest tests -v --ignore=tests/api --ignore=tests/db
+```
+
 Run only API tests:
 
 ```bash
 pytest tests/api -v
+```
+
+Run only Database tests:
+
+```bash
+pytest tests/db -v
 ```
 
 Run smoke tests:
@@ -280,16 +435,49 @@ Screenshots for failed UI tests are generated in:
 screenshots/
 ```
 
-Generated artifacts are excluded from Git.
+Generated test artifacts are excluded from Git.
+
+## Dependencies
+
+Main project dependencies:
+
+```text
+selenium==4.45.0
+pytest==9.1.1
+requests==2.34.2
+pydantic==2.13.4
+psycopg==3.3.4
+psycopg-binary==3.3.4
+python-dotenv==1.2.3
+```
 
 ## Current Status
 
-The framework currently contains automated UI and REST API tests.
+The framework currently contains automated:
+
+- UI tests
+- REST API tests
+- Database tests
+
+The project uses three automation layers:
+
+```text
+UI
+Tests → Page Objects → Selenium
+
+API
+Tests → API Client → Requests
+
+Database
+Tests → Repository → Psycopg → PostgreSQL
+```
 
 Latest full regression run:
 
 ```text
-39 passed
+45 passed
 ```
+
+Current framework capabilities include UI automation, API testing, schema validation, database testing, transaction isolation, logging, screenshots and multi-browser execution.
 
 The project is continuously extended as new automation testing technologies and framework components are added.
