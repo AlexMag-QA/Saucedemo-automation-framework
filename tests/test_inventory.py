@@ -27,6 +27,7 @@ def test_remove_backpack_from_cart(authorized_inventory_page):
     assert authorized_inventory_page.get_cart_items_count() == "1"
 
     authorized_inventory_page.remove_from_cart(Products.BACKPACK)
+    authorized_inventory_page.wait_until_cart_badge_is_hidden()
 
     assert not authorized_inventory_page.has_cart_badge()
 

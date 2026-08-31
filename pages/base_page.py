@@ -57,6 +57,24 @@ class BasePage:
             )
         )
 
+    def wait_until_element_is_invisible(self, by, value):
+        WebDriverWait(
+            self.driver,
+            DEFAULT_TIMEOUT
+        ).until(
+            EC.invisibility_of_element_located(
+                (by, value)
+            )
+        )
+
+    def wait_until_url_contains(self, url_part):
+        WebDriverWait(
+            self.driver,
+            DEFAULT_TIMEOUT
+        ).until(
+            EC.url_contains(url_part)
+        )
+        
     def is_element_visible(self, by, value, timeout=ELEMENT_CHECK_TIMEOUT):
         try:
             WebDriverWait(self.driver, timeout).until(

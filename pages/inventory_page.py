@@ -26,5 +26,10 @@ class InventoryPage(BasePage):
             *InventoryPageLocators.CART_BADGE
         )
 
+    def wait_until_cart_badge_is_hidden(self):
+        self.wait_until_element_is_invisible(
+            *InventoryPageLocators.CART_BADGE
+        )
+
     def open_cart(self):
         self.click(*InventoryPageLocators.CART_LINK)
