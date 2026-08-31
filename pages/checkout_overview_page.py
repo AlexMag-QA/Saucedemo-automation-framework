@@ -11,6 +11,9 @@ class CheckoutOverviewPage(BasePage):
 
     def click_finish(self):
         self.click(*CheckoutOverviewPageLocators.FINISH_BUTTON)
+        self.wait_until_url_contains(
+            "checkout-complete.html"
+        )
 
     def wait_until_title_is(self, expected_title):
         self.wait_for_text(
