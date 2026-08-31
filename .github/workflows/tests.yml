@@ -28,3 +28,6 @@ jobs:
 
       - name: Run API tests
         run: pytest tests/api -v
+
+      - name: Run UI tests
+        run: pytest tests -v --ignore=tests/api --ignore=tests/db --headless
