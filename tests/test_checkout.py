@@ -45,11 +45,15 @@ def test_successful_checkout(
             == EXPECTED_CHECKOUT_INFORMATION_TITLE
     )
 
-    checkout_page.submit_checkout_information(
-        FIRST_NAME,
-        LAST_NAME,
-        POSTAL_CODE,
-    )
+    checkout_page.enter_first_name(FIRST_NAME)
+    checkout_page.enter_last_name(LAST_NAME)
+    checkout_page.enter_postal_code(POSTAL_CODE)
+
+    assert checkout_page.get_first_name_value() == FIRST_NAME
+    assert checkout_page.get_last_name_value() == LAST_NAME
+    assert checkout_page.get_postal_code_value() == POSTAL_CODE
+
+    checkout_page.click_continue()
 
     overview_page.wait_until_title_is(
         EXPECTED_CHECKOUT_OVERVIEW_TITLE

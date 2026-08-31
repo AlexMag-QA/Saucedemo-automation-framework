@@ -4,13 +4,20 @@ from pages.base_page import BasePage
 
 class CheckoutOverviewPage(BasePage):
     def get_overview_title(self):
-        return self.get_text(*CheckoutOverviewPageLocators.PAGE_TITLE)
+        return self.get_text(
+            *CheckoutOverviewPageLocators.PAGE_TITLE
+        )
 
     def get_product_name(self):
-        return self.get_text(*CheckoutOverviewPageLocators.INVENTORY_ITEM_NAME)
+        return self.get_text(
+            *CheckoutOverviewPageLocators.INVENTORY_ITEM_NAME
+        )
 
     def click_finish(self):
-        self.click(*CheckoutOverviewPageLocators.FINISH_BUTTON)
+        self.click(
+            *CheckoutOverviewPageLocators.FINISH_BUTTON
+        )
+
         self.wait_until_url_contains(
             "checkout-complete.html"
         )

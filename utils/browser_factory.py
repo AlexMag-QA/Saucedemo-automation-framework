@@ -10,6 +10,17 @@ def create_driver(browser, headless):
 
         options.add_argument("--window-size=1920,1080")
 
+        prefs = {
+            "credentials_enable_service": False,
+            "profile.password_manager_enabled": False,
+            "profile.password_manager_leak_detection": False,
+        }
+
+        options.add_experimental_option(
+            "prefs",
+            prefs
+        )
+
         return webdriver.Chrome(options=options)
 
     elif browser == "firefox":
@@ -24,4 +35,6 @@ def create_driver(browser, headless):
         return driver
 
     else:
-        raise ValueError(f"Unsupported browser: {browser}")
+        raise ValueError(
+            f"Unsupported browser: {browser}"
+        )

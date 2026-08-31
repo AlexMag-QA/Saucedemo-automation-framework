@@ -50,7 +50,20 @@ class BasePage:
             f"Typing text into element: by={by}, value={value}"
         )
 
-        self.find(by, value).send_keys(text)
+        element = self.find(by, value)
+
+        element.clear()
+        element.send_keys(text)
+
+        WebDriverWait(
+            self.driver,
+            DEFAULT_TIMEOUT
+        ).until(
+            EC.text_to_be_present_in_element_value(
+                (by, value),
+                text
+            )
+        )
 
     def get_text(self, by, value):
         return self.find(by, value).text
@@ -167,3 +180,7 @@ class BasePage:
         element = self.find(by, value)
 
         return Select(element).first_selected_option.text
+
+    def get_attribute(self, by, value, attribute):
+        element = self.find(by, value)
+        return element.get_attribute(attribute)

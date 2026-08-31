@@ -14,6 +14,9 @@ class CheckoutPage(BasePage):
 
     def click_continue(self):
         self.click(*CheckoutPageLocators.CONTINUE_BUTTON)
+        self.wait_until_url_contains(
+            "checkout-step-two.html"
+        )
 
     def get_page_title(self):
         return self.get_text(*CheckoutPageLocators.PAGE_TITLE)
@@ -28,9 +31,6 @@ class CheckoutPage(BasePage):
         self.enter_last_name(last_name)
         self.enter_postal_code(postal_code)
         self.click_continue()
-        self.wait_until_url_contains(
-            "checkout-step-two.html"
-        )
 
     def wait_until_title_is(self, expected_title):
         self.wait_for_text(
@@ -38,3 +38,20 @@ class CheckoutPage(BasePage):
             expected_title
         )
 
+    def get_first_name_value(self):
+        return self.get_attribute(
+            *CheckoutPageLocators.FIRST_NAME_INPUT,
+            "value"
+        )
+
+    def get_last_name_value(self):
+        return self.get_attribute(
+            *CheckoutPageLocators.LAST_NAME_INPUT,
+            "value"
+        )
+
+    def get_postal_code_value(self):
+        return self.get_attribute(
+            *CheckoutPageLocators.POSTAL_CODE_INPUT,
+            "value"
+        )
