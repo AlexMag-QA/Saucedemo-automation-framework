@@ -34,7 +34,16 @@ class BasePage:
             f"Clicking element: by={by}, value={value}"
         )
 
-        self.find(by, value).click()
+        element = WebDriverWait(
+            self.driver,
+            DEFAULT_TIMEOUT
+        ).until(
+            EC.element_to_be_clickable(
+                (by, value)
+            )
+        )
+
+        element.click()
 
     def type(self, by, value, text):
         self.logger.info(
@@ -68,13 +77,21 @@ class BasePage:
         )
 
     def wait_until_url_contains(self, url_part):
-        WebDriverWait(
-            self.driver,
-            DEFAULT_TIMEOUT
-        ).until(
-            EC.url_contains(url_part)
-        )
-        
+        try:
+            WebDriverWait(
+                self.driver,
+                DEFAULT_TIMEOUT
+            ).until(
+                EC.url_contains(url_part)
+            )
+
+        except TimeoutException:
+            self.logger.error(
+                f"URL did not contain '{url_part}'. "
+                f"Current URL: {self.driver.current_url}"
+            )
+            raise
+
     def is_element_visible(self, by, value, timeout=ELEMENT_CHECK_TIMEOUT):
         try:
             WebDriverWait(self.driver, timeout).until(
