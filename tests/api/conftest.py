@@ -1,19 +1,18 @@
 import pytest
-import requests
 
 from api.posts_client import PostsClient
+from api.auth_client import AuthClient
 
 
 @pytest.fixture
-def auth_token():
-    payload = {
-        "username": "emilys",
-        "password": "emilyspass"
-    }
+def auth_client():
+    return AuthClient()
 
-    response = requests.post(
-        "https://dummyjson.com/auth/login",
-        json=payload
+@pytest.fixture
+def auth_token(auth_client):
+    response = auth_client.login(
+        username="emilys",
+        password="emilyspass"
     )
 
     assert response.status_code == 200

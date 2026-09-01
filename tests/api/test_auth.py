@@ -10,14 +10,12 @@ import requests
         "expired_token",
     ]
 )
-def test_invalid_tokens(invalid_token):
-    headers = {
-        "Authorization": f"Bearer {invalid_token}"
-    }
-
-    response = requests.get(
-        "https://dummyjson.com/auth/me",
-        headers=headers
+def test_invalid_tokens(
+        auth_client,
+        invalid_token
+):
+    response = auth_client.get_current_user(
+        invalid_token
     )
 
     assert response.status_code == 401
