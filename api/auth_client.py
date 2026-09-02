@@ -1,11 +1,17 @@
 import time
 import requests
-import requests
 
+from utils.logger import get_logger
 from config.api_settings import DUMMYJSON_BASE_URL
 
+from requests.exceptions import (
+    ConnectionError,
+    SSLError,
+    Timeout,
+)
 
 class AuthClient:
+    logger = get_logger("AuthClient")
 
     def __init__(self):
         self.session = requests.Session()
@@ -39,21 +45,39 @@ class AuthClient:
             max_attempts=3
     ):
         for attempt in range(max_attempts):
-            response = self.session.get(
-                url,
-                headers=headers
-            )
+            try:
+                response = self.session.get(
+                    url,
+                    headers=headers,
+                    timeout=(5, 10)
+                )
 
-            if response.status_code != 429:
-                return response
+                if response.status_code != 429:
+                    return response
 
-            print(
-                f"Received 429. "
-                f"Retry attempt {attempt + 1}/{max_attempts}"
-            )
-            
-            if attempt < max_attempts - 1:
-                delay = 2 ** attempt
-                time.sleep(delay)
+                if attempt < max_attempts - 1:
+                    delay = 2 ** attempt
+
+                    self.logger.warning(
+                        f"Received HTTP 429. "
+                        f"Retrying in {delay}s "
+                        f"(attempt {attempt + 1}/{max_attempts})"
+                    )
+
+                    time.sleep(delay)
+
+            except (ConnectionError, SSLError, Timeout) as error:
+                if attempt < max_attempts - 1:
+                    delay = 2 ** attempt
+
+                    self.logger.warning(
+                        f"Network error: {error}. "
+                        f"Retrying in {delay}s "
+                        f"(attempt {attempt + 1}/{max_attempts})"
+                    )
+
+                    time.sleep(delay)
+                else:
+                    raise
 
         return response
