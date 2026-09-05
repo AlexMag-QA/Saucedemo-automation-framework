@@ -1,6 +1,8 @@
 import pytest
 
 
+@pytest.mark.smoke
+@pytest.mark.regression
 @pytest.mark.parametrize(
     "user_id, expected_username",
     [
@@ -21,6 +23,7 @@ def test_users_exist_in_database(
     assert user["username"] == expected_username
 
 
+@pytest.mark.regression
 def test_nonexistent_user_is_not_found(users_repository):
     user_id = 999999
 
@@ -29,6 +32,7 @@ def test_nonexistent_user_is_not_found(users_repository):
     assert user is None
 
 
+@pytest.mark.regression
 def test_update_user_age_with_rollback(users_repository):
     user_id = 3
     new_age = 99
@@ -41,6 +45,7 @@ def test_update_user_age_with_rollback(users_repository):
     assert user["age"] == new_age
 
 
+@pytest.mark.regression
 def test_create_user_with_rollback(users_repository):
     user_id = 100
     username = "test_user"

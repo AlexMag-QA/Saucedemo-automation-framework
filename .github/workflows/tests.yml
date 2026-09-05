@@ -9,6 +9,11 @@ on:
     branches:
       - main
 
+  workflow_dispatch:
+
+  schedule:
+    - cron: "0 2 * * *"
+      
 jobs:
   api-tests:
     runs-on: ubuntu-latest
@@ -27,8 +32,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run API tests
-        run: pytest tests/api -v
+      - name: Run API smoke tests
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        run: pytest tests/api -m smoke -v
+
+      - name: Run API regression tests
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: pytest tests/api -m regression -v
 
 
   ui-tests:
@@ -48,8 +58,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run UI tests
-        run: pytest tests -v --ignore=tests/api --ignore=tests/db --headless
+      - name: Run UI smoke tests
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        run: pytest tests -m smoke -v --ignore=tests/api --ignore=tests/db --headless
+
+      - name: Run UI regression tests
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: pytest tests -m regression -v --ignore=tests/api --ignore=tests/db --headless
 
       - name: Upload failure artifacts
         if: failure()
@@ -108,5 +123,10 @@ jobs:
             -d qa_training \
             -f database/init.sql
 
-      - name: Run DB tests
-        run: pytest tests/db -v
+      - name: Run DB smoke tests
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        run: pytest tests/db -m smoke -v
+
+      - name: Run DB regression tests
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: pytest tests/db -m regression -v

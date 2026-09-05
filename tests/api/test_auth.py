@@ -2,6 +2,7 @@ import pytest
 import requests
 
 
+@pytest.mark.regression
 @pytest.mark.parametrize(
     "invalid_token",
     [
@@ -20,6 +21,8 @@ def test_invalid_tokens(
 
     assert response.status_code == 401
 
+@pytest.mark.smoke
+@pytest.mark.regression
 def test_login():
     payload = {
         "username": "emilys",
@@ -39,6 +42,7 @@ def test_login():
     assert data["accessToken"]
     assert data["refreshToken"]
 
+@pytest.mark.regression
 def test_get_current_user():
     login_payload = {
         "username": "emilys",
@@ -68,6 +72,7 @@ def test_get_current_user():
     print(response.status_code)
     print(response.json())
 
+@pytest.mark.regression
 def test_get_current_user_without_token():
     response = requests.get(
         "https://dummyjson.com/auth/me"
@@ -78,7 +83,8 @@ def test_get_current_user_without_token():
     data = response.json()
 
     assert data["message"] == "Access Token is required"
-
+    
+@pytest.mark.regression
 def test_get_current_user_with_invalid_token():
     headers = {
         "Authorization": "Bearer invalid_token"
@@ -95,6 +101,8 @@ def test_get_current_user_with_invalid_token():
 
     assert data["message"] == "Invalid/Expired Token!"
 
+@pytest.mark.smoke
+@pytest.mark.regression
 def test_current_user_with_fixture(auth_token):
     headers = {
         "Authorization": f"Bearer {auth_token}"
