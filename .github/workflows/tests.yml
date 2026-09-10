@@ -18,9 +18,6 @@ jobs:
   api-tests:
     runs-on: ubuntu-latest
 
-    env:
-      DEMO_VALUE: ${{ secrets.DEMO_SECRET }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -35,22 +32,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Check demo secret
-        run: |
-          if [ -n "$DEMO_VALUE" ]; then
-            echo "DEMO_VALUE is available"
-          else
-            echo "DEMO_VALUE is missing"
-            exit 1
-          fi
 
       - name: Run API smoke tests
         if: github.event_name == 'pull_request' || github.event_name == 'push'
-        run: pytest tests/api -m smoke -v
+        run: pytest tests/api -m smoke -v --junitxml=reports/api-results.xml
 
       - name: Run API regression tests
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-        run: pytest tests/api -m regression -v
+        run: pytest tests/api -m regression -v --junitxml=reports/api-results.xml
+
+      - name: Upload API test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-test-results
+          path: reports/api-results.xml
 
 
   ui-tests:
