@@ -14,7 +14,7 @@ from pages.inventory_page import InventoryPage
 
 @pytest.mark.smoke
 @pytest.mark.regression
-def test_login(driver,base_url):
+def test_login(driver, base_url):
     login_page = LoginPage(driver)
     inventory_page = InventoryPage(driver)
 
@@ -23,8 +23,7 @@ def test_login(driver,base_url):
 
     assert inventory_page.is_open()
     assert inventory_page.get_page_title() == EXPECTED_INVENTORY_TITLE
-    assert False, "Intentional CI failure for artifact test"
-
+    
 
 @pytest.mark.regression
 @pytest.mark.negative
@@ -37,5 +36,3 @@ def test_invalid_login(driver, base_url):
     actual_error = login_page.get_error_message()
 
     assert EXPECTED_INVALID_LOGIN_ERROR_TEXT in actual_error
-
-
