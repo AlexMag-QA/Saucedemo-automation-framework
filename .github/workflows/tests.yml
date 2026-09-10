@@ -68,11 +68,18 @@ jobs:
 
       - name: Run UI smoke tests
         if: github.event_name == 'pull_request' || github.event_name == 'push'
-        run: pytest tests -m smoke -v --ignore=tests/api --ignore=tests/db --headless
+        run: pytest tests -m smoke -v --ignore=tests/api --ignore=tests/db --headless --junitxml=reports/ui-results.xml
 
       - name: Run UI regression tests
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-        run: pytest tests -m regression -v --ignore=tests/api --ignore=tests/db --headless
+        run: pytest tests -m regression -v --ignore=tests/api --ignore=tests/db --headless --junitxml=reports/ui-results.xml
+
+      - name: Upload UI test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-test-results
+          path: reports/ui-results.xml
 
       - name: Upload failure artifacts
         if: failure()
@@ -133,8 +140,15 @@ jobs:
 
       - name: Run DB smoke tests
         if: github.event_name == 'pull_request' || github.event_name == 'push'
-        run: pytest tests/db -m smoke -v
+        run: pytest tests/db -m smoke -v --junitxml=reports/db-results.xml
 
       - name: Run DB regression tests
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-        run: pytest tests/db -m regression -v
+        run: pytest tests/db -m regression -v --junitxml=reports/db-results.xml
+
+      - name: Upload DB test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-test-results
+          path: reports/db-results.xml
