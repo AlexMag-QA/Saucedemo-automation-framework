@@ -23,6 +23,7 @@ def test_login(driver,base_url):
 
     assert inventory_page.is_open()
     assert inventory_page.get_page_title() == EXPECTED_INVENTORY_TITLE
+    assert False, "Intentional CI failure for artifact test"
 
 
 @pytest.mark.regression
