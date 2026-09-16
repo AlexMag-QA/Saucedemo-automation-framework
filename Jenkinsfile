@@ -8,7 +8,7 @@ pipeline {
         DB_PORT = '5432'
         DB_NAME = 'qa_training'
         DB_USER = 'postgres'
-        DB_PASSWORD = 'test_password'
+        DB_PASSWORD = credentials('qa-db-password')
     }
 
     options {
@@ -63,7 +63,7 @@ pipeline {
                       --name qa-postgres \
                       -e POSTGRES_DB=qa_training \
                       -e POSTGRES_USER=postgres \
-                      -e POSTGRES_PASSWORD=test_password \
+                      -e POSTGRES_PASSWORD="$DB_PASSWORD" \
                       -p 5432:5432 \
                       postgres:16
                 '''
