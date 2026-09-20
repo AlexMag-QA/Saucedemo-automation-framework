@@ -134,44 +134,26 @@ pipeline {
                 }
             }
         }
-
-        stage('Generate Allure Report') {
-            steps {
-                sh '''
-                    rm -rf allure-results/combined
-                    mkdir -p allure-results/combined
-
-                    cp -r allure-results/api/. allure-results/combined/
-                    cp -r allure-results/ui/. allure-results/combined/
-                    cp -r allure-results/db/. allure-results/combined/
-
-                    allure generate \
-                      allure-results/combined \
-                      -o allure-report \
-                      --clean
-                '''
-            }
-        }
     }
 
     post {
         always {
             junit allowEmptyResults: true, testResults: 'reports/*.xml'
 
+            allure([
+                includeProperties: false,
+                jdk: '',
+                properties: [],
+                reportBuildPolicy: 'ALWAYS',
+                results: [
+                    [path: 'allure-results/api'],
+                    [path: 'allure-results/ui'],
+                    [path: 'allure-results/db']
+                ]
+            ])
+
             archiveArtifacts(
                 artifacts: 'reports/*.xml',
-                allowEmptyArchive: true
-            )
-
-            archiveArtifacts(
-                artifacts: 'allure-report/**',
-                allowEmptyArchive: true
-            )
-        }
-
-        failure {
-            archiveArtifacts(
-                artifacts: 'screenshots/**, logs/**',
                 allowEmptyArchive: true
             )
         }
