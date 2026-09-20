@@ -3,9 +3,13 @@ from pydantic import ValidationError
 
 from models.post_model import PostModel
 
+from utils.allure_helpers import attach_api_exchange
+
 
 def test_get_post(posts_client):
     response = posts_client.get_post(1)
+
+    attach_api_exchange(response)
 
     assert response.status_code == 200
     assert "application/json" in response.headers["Content-Type"]
@@ -26,6 +30,8 @@ def test_create_post(posts_client):
     }
 
     response = posts_client.create_post(payload)
+
+    attach_api_exchange(response)
 
     assert response.status_code == 201
     assert "application/json" in response.headers["Content-Type"]

@@ -1,4 +1,5 @@
 import pytest
+import allure
 
 from config.settings import DEFAULT_ENVIRONMENT, ENVIRONMENTS
 from data.users import Users
@@ -83,7 +84,7 @@ def browser(request):
     return request.config.getoption("--browser")
 
 
-@pytest.hookimpl(hookwrapper=True) 
+@pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     outcome = yield
     report = outcome.get_result()
@@ -92,7 +93,12 @@ def pytest_runtest_makereport(item, call):
         driver = item.funcargs.get("driver")
 
         if driver:
-            save_screenshot(
-                driver,
-                item.name,
+            screenshot_path = save_screenshot(
+                driver, item.name,
+            )
+
+            allure.attach.file(
+                str(screenshot_path),
+                name="Screenshot on failure",
+                attachment_type=allure.attachment_type.PNG,
             )

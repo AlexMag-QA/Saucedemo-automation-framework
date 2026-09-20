@@ -50,7 +50,7 @@ pipeline {
 
         stage('Prepare reports directory') {
             steps {
-                sh 'mkdir -p reports'
+                sh 'mkdir -p reports allure-results/api allure-results/ui allure-results/db'
             }
         }
 
@@ -106,19 +106,19 @@ pipeline {
             parallel {
                 stage('API Tests') {
                     steps {
-                        sh '.venv/bin/pytest tests/api -m "$TEST_MARKER" -v --junitxml=reports/api-results.xml'
+                        sh '.venv/bin/pytest tests/api -m "$TEST_MARKER" -v --junitxml=reports/api-results.xml --alluredir=allure-results/api'
                     }
                 }
 
                 stage('UI Tests') {
                     steps {
-                        sh '.venv/bin/pytest tests -m "$TEST_MARKER" -v --ignore=tests/api --ignore=tests/db --headless --junitxml=reports/ui-results.xml'
+                        sh '.venv/bin/pytest tests -m "$TEST_MARKER" -v --ignore=tests/api --ignore=tests/db --headless --junitxml=reports/ui-results.xml --alluredir=allure-results/ui'
                     }
                 }
 
                 stage('DB Tests') {
                     steps {
-                        sh '.venv/bin/pytest tests/db -m "$TEST_MARKER" -v --junitxml=reports/db-results.xml'
+                        sh '.venv/bin/pytest tests/db -m "$TEST_MARKER" -v --junitxml=reports/db-results.xml --alluredir=allure-results/db'
                     }
                 }
             }
