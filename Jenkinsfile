@@ -10,8 +10,6 @@ pipeline {
         DB_USER = 'postgres'
         DB_PASSWORD = credentials('qa-db-password')
 
-        ALLURE_HOME = '/mnt/v/Tools (QA)/allure-2.46.1'
-        PATH = "${ALLURE_HOME}/bin:${env.PATH}"
     }
 
     options {
@@ -32,6 +30,20 @@ pipeline {
     }
 
     stages {
+        stage('Prepare reports directory') {
+                steps {
+                    sh '''
+                        rm -rf reports allure-results allure-report
+
+                        mkdir -p \
+                          reports \
+                          allure-results/api \
+                          allure-results/ui \
+                          allure-results/db
+                    '''
+                }
+            }
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -48,20 +60,6 @@ pipeline {
             steps {
                 sh '.venv/bin/python -m pip install --upgrade pip'
                 sh '.venv/bin/python -m pip install -r requirements.txt'
-            }
-        }
-
-        stage('Prepare reports directory') {
-            steps {
-                sh '''
-                    rm -rf reports allure-results allure-report
-
-                    mkdir -p \
-                      reports \
-                      allure-results/api \
-                      allure-results/ui \
-                      allure-results/db
-                '''
             }
         }
 
