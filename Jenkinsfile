@@ -50,7 +50,15 @@ pipeline {
 
         stage('Prepare reports directory') {
             steps {
-                sh 'mkdir -p reports allure-results/api allure-results/ui allure-results/db'
+                sh '''
+                    rm -rf reports allure-results allure-report
+
+                    mkdir -p \
+                      reports \
+                      allure-results/api \
+                      allure-results/ui \
+                      allure-results/db
+                '''
             }
         }
 
@@ -123,6 +131,24 @@ pipeline {
                 }
             }
         }
+        
+        stage('Generate Allure Report') {
+            steps {
+                sh '''
+                    rm -rf allure-results/combined
+                    mkdir -p allure-results/combined
+
+                    cp -r allure-results/api/. allure-results/combined/
+                    cp -r allure-results/ui/. allure-results/combined/
+                    cp -r allure-results/db/. allure-results/combined/
+
+                    allure generate \
+                      allure-results/combined \
+                      -o allure-report \
+                      --clean
+                '''
+            }
+        }
     }
 
     post {
@@ -131,6 +157,11 @@ pipeline {
 
             archiveArtifacts(
                 artifacts: 'reports/*.xml',
+                allowEmptyArchive: true
+            )
+
+            archiveArtifacts(
+                artifacts: 'allure-report/**',
                 allowEmptyArchive: true
             )
         }
