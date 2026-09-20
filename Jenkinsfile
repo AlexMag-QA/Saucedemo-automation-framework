@@ -9,6 +9,9 @@ pipeline {
         DB_NAME = 'qa_training'
         DB_USER = 'postgres'
         DB_PASSWORD = credentials('qa-db-password')
+
+        ALLURE_HOME = '/mnt/v/Tools (QA)/allure-2.46.1'
+        PATH = "${ALLURE_HOME}/bin:${env.PATH}"
     }
 
     options {
@@ -131,7 +134,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Generate Allure Report') {
             steps {
                 sh '''
