@@ -1,7 +1,7 @@
 from selenium import webdriver
 
 
-def create_driver(browser, headless):
+def create_driver(browser, headless, remote_url=None):
     if browser == "chrome":
         options = webdriver.ChromeOptions()
 
@@ -21,6 +21,12 @@ def create_driver(browser, headless):
             prefs
         )
 
+        if remote_url:
+            return webdriver.Remote(
+                command_executor=remote_url,
+                options=options
+            )
+        
         return webdriver.Chrome(options=options)
 
     elif browser == "firefox":

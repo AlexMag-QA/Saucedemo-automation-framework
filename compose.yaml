@@ -1,0 +1,13 @@
+services:
+  selenium:
+    image: selenium/standalone-chrome:latest
+    ports:
+      - "4444:4444"
+
+  tests:
+    build: .
+    environment:
+      SELENIUM_REMOTE_URL: http://selenium:4444
+    depends_on:
+      - selenium
+    command: pytest tests/test_checkout.py -v

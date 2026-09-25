@@ -1,5 +1,6 @@
 import pytest
 import allure
+import os
 
 from config.settings import DEFAULT_ENVIRONMENT, ENVIRONMENTS
 from data.users import Users
@@ -24,8 +25,12 @@ def login_as(driver, base_url):
 
 
 @pytest.fixture
-def driver(browser, headless):
-    driver = create_driver(browser, headless)
+def driver(browser, headless, remote_url):
+    driver = create_driver(
+        browser,
+        headless,
+        remote_url
+    )
 
     yield driver
 
@@ -102,3 +107,7 @@ def pytest_runtest_makereport(item, call):
                 name="Screenshot on failure",
                 attachment_type=allure.attachment_type.PNG,
             )
+
+@pytest.fixture
+def remote_url():
+    return os.getenv("SELENIUM_REMOTE_URL")
