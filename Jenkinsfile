@@ -121,7 +121,17 @@ pipeline {
 
                 stage('UI Tests') {
                     steps {
-                        sh '.venv/bin/pytest tests -m "$TEST_MARKER" -v --ignore=tests/api --ignore=tests/db --headless --junitxml=reports/ui-results.xml --alluredir=allure-results/ui'
+                        sh '''
+                            docker compose run --rm tests \
+                              pytest tests \
+                              -m "$TEST_MARKER" \
+                              -v \
+                              --ignore=tests/api \
+                              --ignore=tests/db \
+                              --headless \
+                              --junitxml=reports/ui-results.xml \
+                              --alluredir=allure-results/ui
+                        '''
                     }
                 }
 
@@ -157,6 +167,7 @@ pipeline {
         }
 
         cleanup {
+            sh 'docker compose down || true'
             sh 'docker rm -f qa-postgres || true'
         }
     }
