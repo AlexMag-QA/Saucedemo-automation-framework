@@ -14,11 +14,11 @@ from pages.inventory_page import InventoryPage
 
 @pytest.mark.smoke
 @pytest.mark.regression
-def test_login(driver, base_url):
+def test_login(driver, selenium_base_url):
     login_page = LoginPage(driver)
     inventory_page = InventoryPage(driver)
 
-    login_page.open(base_url)
+    login_page.open(selenium_base_url)
     login_page.login(LOGIN, PASSWORD)
 
     assert inventory_page.is_open()
@@ -27,10 +27,10 @@ def test_login(driver, base_url):
 
 @pytest.mark.regression
 @pytest.mark.negative
-def test_invalid_login(driver, base_url):
+def test_invalid_login(driver, selenium_base_url):
     login_page = LoginPage(driver)
 
-    login_page.open(base_url)
+    login_page.open(selenium_base_url)
     login_page.login(INVALID_LOGIN, INVALID_PASSWORD)
 
     actual_error = login_page.get_error_message()

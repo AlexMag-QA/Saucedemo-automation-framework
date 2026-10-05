@@ -11,11 +11,11 @@ from utils.screenshot import save_screenshot
 
 
 @pytest.fixture
-def login_as(driver, base_url):
+def login_as(driver, selenium_base_url):
     def login(user):
         login_page = LoginPage(driver)
 
-        login_page.open(base_url)
+        login_page.open(selenium_base_url)
         login_page.login(
             user["username"],
             user["password"]
@@ -25,9 +25,9 @@ def login_as(driver, base_url):
 
 
 @pytest.fixture
-def driver(browser, headless, remote_url):
+def driver(selenium_browser, headless, remote_url):
     driver = create_driver(
-        browser,
+        selenium_browser,
         headless,
         remote_url
     )
@@ -61,11 +61,11 @@ def pytest_addoption(parser):
     )
 
     parser.addoption(
-        "--browser",
+        "--selenium-browser",
         action="store",
         default="chrome",
         choices=["chrome", "firefox"],
-        help="Browser for test execution",
+        help="Browser for Selenium test execution",
     )
 
 
@@ -75,7 +75,7 @@ def environment(request):
 
 
 @pytest.fixture
-def base_url(environment):
+def selenium_base_url(environment):
     return ENVIRONMENTS[environment]
 
 
@@ -85,8 +85,8 @@ def headless(request):
 
 
 @pytest.fixture
-def browser(request):
-    return request.config.getoption("--browser")
+def selenium_browser(request):
+    return request.config.getoption("--selenium-browser")
 
 
 @pytest.hookimpl(hookwrapper=True)
