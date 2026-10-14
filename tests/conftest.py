@@ -111,3 +111,10 @@ def pytest_runtest_makereport(item, call):
 @pytest.fixture
 def remote_url():
     return os.getenv("SELENIUM_REMOTE_URL")
+
+@pytest.fixture
+def browser_context_args(browser_context_args, environment):
+    return {
+        **browser_context_args,
+        "base_url": ENVIRONMENTS[environment],
+    }
