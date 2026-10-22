@@ -14,6 +14,7 @@ __pycache__/
 # Generated test artifacts
 logs/
 screenshots/allure generate allure-results -o allure-report --clean
+test-results/
 
 # OS files
 .DS_Store
