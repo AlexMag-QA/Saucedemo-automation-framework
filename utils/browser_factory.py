@@ -16,18 +16,7 @@ def create_driver(browser, headless, remote_url=None):
             "profile.password_manager_leak_detection": False,
         }
 
-        options.add_experimental_option(
-            "prefs",
-            prefs
-        )
-
-        if remote_url:
-            return webdriver.Remote(
-                command_executor=remote_url,
-                options=options
-            )
-        
-        return webdriver.Chrome(options=options)
+        options.add_experimental_option("prefs", prefs)
 
     elif browser == "firefox":
         options = webdriver.FirefoxOptions()
@@ -35,12 +24,19 @@ def create_driver(browser, headless, remote_url=None):
         if headless:
             options.add_argument("--headless")
 
-        driver = webdriver.Firefox(options=options)
-        driver.set_window_size(1920, 1080)
-
-        return driver
+        options.add_argument("--width=1920")
+        options.add_argument("--height=1080")
 
     else:
-        raise ValueError(
-            f"Unsupported browser: {browser}"
+        raise ValueError(f"Unsupported browser: {browser}")
+
+    if remote_url:
+        return webdriver.Remote(
+            command_executor=remote_url,
+            options=options,
         )
+
+    if browser == "chrome":
+        return webdriver.Chrome(options=options)
+
+    return webdriver.Firefox(options=options)

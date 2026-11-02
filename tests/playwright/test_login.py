@@ -1,9 +1,12 @@
+import pytest
 from playwright.sync_api import expect
 
 from pages.playwright.inventory_page import InventoryPage
 from pages.playwright.login_page import LoginPage
 
 
+@pytest.mark.smoke
+@pytest.mark.regression
 def test_successful_login(page):
     login_page = LoginPage(page)
     inventory_page = InventoryPage(page)
@@ -14,6 +17,7 @@ def test_successful_login(page):
     expect(page).to_have_url("/inventory.html")
     expect(inventory_page.title).to_have_text("Products")
 
+@pytest.mark.regression
 def test_invalid_login(page):
     login_page = LoginPage(page)
 

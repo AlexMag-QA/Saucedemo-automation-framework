@@ -94,19 +94,28 @@ def pytest_runtest_makereport(item, call):
     outcome = yield
     report = outcome.get_result()
 
-    if report.when in ("setup", "call") and report.failed:
-        driver = item.funcargs.get("driver")
+    if report.when not in ("setup", "call") or not report.failed:
+        return
 
-        if driver:
-            screenshot_path = save_screenshot(
-                driver, item.name,
-            )
+    driver = item.funcargs.get("driver")
 
-            allure.attach.file(
-                str(screenshot_path),
-                name="Screenshot on failure",
-                attachment_type=allure.attachment_type.PNG,
-            )
+    if driver is None:
+        return
+
+    try:
+        screenshot_path = save_screenshot(driver, item.name)
+
+        allure.attach.file(
+            str(screenshot_path),
+            name="Screenshot on failure",
+            attachment_type=allure.attachment_type.PNG,
+        )
+
+    except Exception as error:
+        print(
+            f"Could not capture screenshot for "
+            f"{item.name}: {error}"
+        )
 
 @pytest.fixture
 def remote_url():
