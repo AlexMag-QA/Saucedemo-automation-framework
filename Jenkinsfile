@@ -39,7 +39,8 @@ pipeline {
                           reports \
                           allure-results/api \
                           allure-results/ui \
-                          allure-results/db
+                          allure-results/db \
+                          allure-results/playwright
                     '''
                 }
             }
@@ -128,6 +129,7 @@ pipeline {
                               -v \
                               --ignore=tests/api \
                               --ignore=tests/db \
+                              --ignore=tests/playwright \
                               --headless \
                               --junitxml=reports/ui-results.xml \
                               --alluredir=allure-results/ui
@@ -138,6 +140,19 @@ pipeline {
                 stage('DB Tests') {
                     steps {
                         sh '.venv/bin/pytest tests/db -m "$TEST_MARKER" -v --junitxml=reports/db-results.xml --alluredir=allure-results/db'
+                    }
+                }
+
+                stage('Playwright Tests') {
+                    steps {
+                        sh '''
+                            docker compose run --rm -e TEST_MARKER playwright \
+                              bash -c 'pip install -r requirements.txt &&
+                                       pytest tests/playwright -m "$TEST_MARKER" -v \
+                                       --browser chromium \
+                                       --junitxml=reports/playwright-results.xml \
+                                       --alluredir=allure-results/playwright'
+                        '''
                     }
                 }
             }
@@ -156,7 +171,8 @@ pipeline {
                 results: [
                     [path: 'allure-results/api'],
                     [path: 'allure-results/ui'],
-                    [path: 'allure-results/db']
+                    [path: 'allure-results/db'],
+                    [path: 'allure-results/playwright']
                 ]
             ])
 
