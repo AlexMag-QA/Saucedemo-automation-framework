@@ -147,11 +147,14 @@ pipeline {
                     steps {
                         sh '''
                             docker compose run --rm -e TEST_MARKER playwright \
-                              bash -c 'pip install -r requirements.txt &&
-                                       pytest tests/playwright -m "$TEST_MARKER" -v \
-                                       --browser chromium \
-                                       --junitxml=reports/playwright-results.xml \
-                                       --alluredir=allure-results/playwright'
+                                bash -c 'pip install -r requirements.txt &&
+                                pytest tests/playwright -m "$TEST_MARKER" -v \
+                                --browser chromium \
+                                --screenshot only-on-failure \
+                                --tracing retain-on-failure \
+                                --output reports/playwright-artifacts \
+                                --junitxml=reports/playwright-results.xml \
+                                --alluredir=allure-results/playwright'
                         '''
                     }
                 }
@@ -177,7 +180,7 @@ pipeline {
             ])
 
             archiveArtifacts(
-                artifacts: 'reports/*.xml',
+                artifacts: 'reports/*.xml, reports/playwright-artifacts/**/*',
                 allowEmptyArchive: true
             )
         }
