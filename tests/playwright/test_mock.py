@@ -1,3 +1,7 @@
+import pytest
+
+
+@pytest.mark.technical
 def test_mock_api_response(page):
 
     def mock_response(route):

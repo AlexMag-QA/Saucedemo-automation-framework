@@ -1,3 +1,7 @@
+import pytest
+
+
+@pytest.mark.regression
 def test_get_post(playwright):
     api_context = playwright.request.new_context()
 

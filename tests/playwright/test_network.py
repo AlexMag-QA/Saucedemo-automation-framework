@@ -1,3 +1,7 @@
+import pytest
+
+
+@pytest.mark.technical
 def test_network_requests(page):
     requests = []
 
