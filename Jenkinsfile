@@ -146,15 +146,18 @@ pipeline {
                 stage('Playwright Tests') {
                     steps {
                         sh '''
+                            docker compose build playwright
+
                             docker compose run --rm -e TEST_MARKER playwright \
-                                bash -c 'pip install -r requirements.txt &&
-                                pytest tests/playwright -m "$TEST_MARKER" -v \
+                                pytest tests/playwright \
+                                -m "$TEST_MARKER" \
+                                -v \
                                 --browser chromium \
                                 --screenshot only-on-failure \
                                 --tracing retain-on-failure \
                                 --output reports/playwright-artifacts \
                                 --junitxml=reports/playwright-results.xml \
-                                --alluredir=allure-results/playwright'
+                                --alluredir=allure-results/playwright
                         '''
                     }
                 }
